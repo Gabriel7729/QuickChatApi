@@ -53,7 +53,7 @@ public class AuthService : IAuthService
     User? user = await _userRepository.GetBySpecAsync(spec, cancellationToken)
       ?? throw new Exception($"The user was not found");
 
-      return GenerateToken(user);
+    return GenerateToken(user);
   }
   public TokenClaim DecryptToken(string token)
   {
@@ -68,6 +68,15 @@ public class AuthService : IAuthService
       {
         case "userId":
           tokenClaim.UserId = Guid.Parse(claim.Value);
+          break;
+        case "name":
+          tokenClaim.Name = claim.Value;
+          break;
+        case "lastName":
+          tokenClaim.LastName = claim.Value;
+          break;
+        case "phoneNumber":
+          tokenClaim.PhoneNumber = claim.Value;
           break;
         case "email":
           tokenClaim.Email = claim.Value;
@@ -99,6 +108,9 @@ public class AuthService : IAuthService
 
     var claims = new ClaimsIdentity(new[] {
                 new Claim("userId", user.Id.ToString()),
+                new Claim("name", user.Name),
+                new Claim("lastName", user.LastName),
+                new Claim("phoneNumber", user.PhoneNumber),
                 new Claim("email", user.Email),
                 new Claim("isEmaiValidated", user.UserAction!.IsEmailValidated.ToString()),
     });

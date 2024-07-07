@@ -7,6 +7,8 @@ using Autofac.Extensions.DependencyInjection;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using Serilog;
+using Autofac.Core;
+using ApiTemplate.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,8 @@ builder.Services.ConfigDbConnection(builder.Configuration);
 #endregion
 
 #region Configurations
+
+builder.Services.AddSignalR();
 
 //DinkToPdf configuration
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
@@ -108,6 +112,7 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clean Api V
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapDefaultControllerRoute();
+    endpoints.MapHub<ChatHub>("/chathub");
 });
 
 app.Run();

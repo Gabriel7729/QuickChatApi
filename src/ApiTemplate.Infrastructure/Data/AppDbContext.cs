@@ -19,7 +19,7 @@ public class AppDbContext : DbContext
     _dispatcher = dispatcher;
   }
 
-  public DbSet<User> User => Set<User>();
+  public DbSet<User> Users => Set<User>();
   public DbSet<UserAction> UserActions => Set<UserAction>();
 
   public DbSet<Chat> Chats => Set<Chat>();
