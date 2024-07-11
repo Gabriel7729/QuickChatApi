@@ -112,7 +112,7 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clean Api V
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapDefaultControllerRoute();
-    endpoints.MapHub<ChatHub>("/chathub");
+    endpoints.MapHub<ChatHub>("/hub/chat");
 });
 
 app.Run();

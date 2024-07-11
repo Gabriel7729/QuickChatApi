@@ -11,30 +11,29 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace ApiTemplate.Web.Endpoints.UserEndpoints;
 
 [Authorize]
-public class AddContact : EndpointBaseAsync
-  .WithRequest<AddContactRequest>
+public class GetUserByPhoneNumberOrEmail : EndpointBaseAsync
+  .WithRequest<GetUserByPhoneNumberOrEmailRequest>
   .WithActionResult<Result<UserResponseDto>>
 {
   private readonly IRepository<User> _userRepository;
 
-  public AddContact(IRepository<User> userRepository)
+  public GetUserByPhoneNumberOrEmail(IRepository<User> userRepository)
   {
     _userRepository = userRepository;
   }
 
-  [HttpPost("/api/User/AddContact")]
+  [HttpGet("/api/User/{userId:guid}/Exists")]
   [SwaggerOperation(
-          Summary = "Add a contact to a user",
-          Description = "Add a contact to a user",
-          OperationId = "User.AddContact",
+          Summary = "Get If user exists",
+          Description = "Get If user exists",
+          OperationId = "User.GetIfAlreadyExists",
           Tags = new[] { "UserEndpoints" })
   ]
-  public override async Task<ActionResult<Result<UserResponseDto>>> HandleAsync([FromBody] AddContactRequest request, CancellationToken cancellationToken = default)
+  public override async Task<ActionResult<Result<UserResponseDto>>> HandleAsync([FromRoute] GetUserByPhoneNumberOrEmailRequest request, CancellationToken cancellationToken = default)
   {
     try
     {
-      GetUserWithContactsSpec getUserWithContactsSpec = new GetUserWithContactsSpec(request.UserId);
-      User? user = await _userRepository.GetBySpecAsync(getUserWithContactsSpec, cancellationToken);
+      User? user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
       GetUserByPhoneNumberOrEmailSpec getUserByPhoneNumberOrEmailSpec = new GetUserByPhoneNumberOrEmailSpec(request.PhoneNumber, request.Email);
       User? contact = await _userRepository.GetBySpecAsync(getUserByPhoneNumberOrEmailSpec, cancellationToken);
@@ -45,15 +44,13 @@ public class AddContact : EndpointBaseAsync
       if (user.Contacts.Any(c => c.Id == contact.Id))
         return BadRequest(Result<UserResponseDto>.Error(new string[] { "Contact already added" }));
 
-      user.Contacts.Add(contact);
-
-      await _userRepository.UpdateAsync(user, cancellationToken);
-
       var userResponse = new UserResponseDto
       {
         Id = contact.Id,
         Name = contact.Name,
-        LastName = contact.LastName
+        LastName = contact.LastName,
+        Email = contact.Email,
+        PhoneNumber = contact.PhoneNumber
       };
 
       var result = Result<UserResponseDto>.Success(userResponse);

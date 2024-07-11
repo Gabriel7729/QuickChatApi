@@ -82,7 +82,7 @@ public class AuthService : IAuthService
           tokenClaim.Email = claim.Value;
           break;
         case "isEmaiValidated":
-          tokenClaim.Email = claim.Value;
+          tokenClaim.IsEmailValidated = Convert.ToBoolean(claim.Value);
           break;
         default:
           break;

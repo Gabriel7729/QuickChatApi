@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+
+        .message {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: flex-start;
+        }
+
+            .message:last-child {
+                border-bottom: none;
+            }
+
+            .message .sender {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .message .timestamp {
+                color: #888;
+                font-size: 0.9em;
+                margin-left: auto;
+            }
+
+            .message .content {
+                margin-top: 5px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chat Messages</h1>
+        {{ ChatMessages }}
+    </div>
+</body>
+</html>

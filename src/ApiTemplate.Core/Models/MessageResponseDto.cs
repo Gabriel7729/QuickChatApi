@@ -1,6 +1,5 @@
-﻿namespace ApiTemplate.Infrastructure.Dto.MessageDtos;
-
-public class SendMessageResponseDto
+﻿namespace ApiTemplate.Core.Models;
+public class MessageResponseDto
 {
   public Guid Id { get; set; }
   public string Content { get; set; } = string.Empty;

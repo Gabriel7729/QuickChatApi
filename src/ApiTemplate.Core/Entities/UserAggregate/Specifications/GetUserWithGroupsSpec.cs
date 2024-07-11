@@ -11,3 +11,15 @@ public class GetUserWithGroupsSpec : Specification<User>
       .ThenInclude(gm => gm.Group);
   }
 }
+
+public class GetUserWithGroupsInCommonWithContactSpec : Specification<User>, ISingleResultSpecification
+{
+  public GetUserWithGroupsInCommonWithContactSpec(Guid userId)
+  {
+    Query
+        .Where(u => u.Id == userId)
+        .Include(u => u.GroupMembers)
+            .ThenInclude(gm => gm.Group)
+              .ThenInclude(g => g.GroupMembers); ;
+  }
+}

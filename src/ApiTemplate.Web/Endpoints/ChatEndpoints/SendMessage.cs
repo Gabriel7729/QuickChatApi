@@ -1,14 +1,16 @@
 ﻿using ApiTemplate.Core.Entities.ChatAggregate;
+using ApiTemplate.Core.Entities.ChatAggregate.Specifications;
+using ApiTemplate.Core.Entities.UserAggregate;
+using ApiTemplate.Core.Models;
 using ApiTemplate.Infrastructure.Dto.MessageDtos;
 using ApiTemplate.SharedKernel.Interfaces;
+using ApiTemplate.Web.Hubs;
 using Ardalis.ApiEndpoints;
 using Ardalis.Result;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Swashbuckle.AspNetCore.Annotations;
-using ApiTemplate.Web.Hubs;
-using ApiTemplate.Core.Entities.UserAggregate;
 
 namespace ApiTemplate.Web.Endpoints.ChatEndpoints;
 
@@ -57,21 +59,28 @@ public class SendMessage : EndpointBaseAsync
       {
         ChatId = request.ChatId,
         Content = request.Content,
-        Timestamp = DateTime.UtcNow,
+        Timestamp = DateTime.Now,
         SenderId = request.SenderId
       };
 
       await _messageRepository.AddAsync(message, cancellationToken);
 
-      // Notify all clients in the chat
-      await _chatHubContext.Clients.Group(chat.Id.ToString()).SendAsync("ReceiveMessage", new
-      {
-        message.Id,
-        message.Content,
-        message.Timestamp,
-        message.SenderId,
-        SenderName = user.Name + " " + user.LastName
-      }, cancellationToken: cancellationToken);
+      GetMessagesWithSenderSpec getMessagesWithSenderSpec = new GetMessagesWithSenderSpec(request.ChatId);
+      var newChats = await _chatRepository.GetBySpecAsync(getMessagesWithSenderSpec, cancellationToken);
+      if (newChats == null)
+        return NotFound(Result<List<MessageResponseDto>>.Error(new string[] { "Chat not found" }));
+
+      var messages = newChats.Messages
+        .Select(m => new MessageResponseDto
+        {
+          Id = m.Id,
+          Content = m.Content,
+          Timestamp = m.Timestamp,
+          SenderId = m.SenderId,
+          SenderName = m.Sender.Name // Assuming that the Sender navigation property is loaded
+        }).ToList().OrderBy(x => x.Timestamp);
+
+      await _chatHubContext.Clients.All.SendAsync("ReceiveMessages", messages, cancellationToken: cancellationToken);
 
       var response = new SendMessageResponseDto
       {
