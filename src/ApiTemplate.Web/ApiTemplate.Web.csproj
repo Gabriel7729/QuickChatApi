@@ -36,8 +36,4 @@
     <ProjectReference Include="..\ApiTemplate.Infrastructure\ApiTemplate.Infrastructure.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Folder Include="wwwroot\ExcelTemplate\" />
-  </ItemGroup>
-  
 </Project>

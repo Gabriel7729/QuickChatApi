@@ -9,5 +9,8 @@ public class DefaultCoreModule : Module
   {
     builder.RegisterType<ChatService>().As<IChatService>()
       .InstancePerLifetimeScope();
+
+    builder.RegisterType<OtpService>().As<IOtpService>()
+      .InstancePerLifetimeScope();
   }
 }

@@ -30,6 +30,8 @@ builder.Services.ConfigDbConnection(builder.Configuration);
 
 #region Configurations
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddSignalR();
 
 //DinkToPdf configuration

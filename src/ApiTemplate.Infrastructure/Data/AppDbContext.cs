@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using ApiTemplate.Core.Entities.ChatAggregate;
 using ApiTemplate.Core.Entities.UserAggregate;
+using ApiTemplate.Core.Entities.ValidationsAggregate;
 using ApiTemplate.Infrastructure.Data.Extensions;
 using ApiTemplate.SharedKernel;
 using ApiTemplate.SharedKernel.Interfaces;
@@ -21,6 +22,7 @@ public class AppDbContext : DbContext
 
   public DbSet<User> Users => Set<User>();
   public DbSet<UserAction> UserActions => Set<UserAction>();
+  public DbSet<VerificationCode> VerificationCodes => Set<VerificationCode>();
 
   public DbSet<Chat> Chats => Set<Chat>();
   public DbSet<UserChat> UserChats => Set<UserChat>();
